@@ -5,6 +5,8 @@ import connectDB from "./config/db.js";
 import errorHandler from "./middleware/errorHandler.js";
 import teamRoutes from "./routes/teamRoutes.js";
 import playerRoutes from "./routes/playerRoutes.js";
+import gameRoutes from "./routes/gameRoutes.js";
+import statsRoutes from "./routes/statsRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -17,6 +19,8 @@ app.use(express.json());
 // Routes
 app.use("/api/teams", teamRoutes);
 app.use("/api/players", playerRoutes);
+app.use("/api/games", gameRoutes);
+app.use("/api/stats", statsRoutes);
 
 app.use(errorHandler);
 
