@@ -41,7 +41,7 @@ export const updateGameStatus = (id, body) =>
   request(`/games/${id}/status`, { method: "PUT", body: JSON.stringify(body) });
 export const updateSets = (id, body) =>
   request(`/games/${id}/sets`, { method: "PUT", body: JSON.stringify(body) });
-export const deletGame = (id) => request(`/games/${id}`, { method: "DELETE" });
+export const deleteGame = (id) => request(`/games/${id}`, { method: "DELETE" });
 
 // Stats
 export const getStatsByGame = (gameId) => request(`/stats/game/${gameId}`);
