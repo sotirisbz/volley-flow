@@ -6,7 +6,7 @@ import ErrorMessage from "../components/ErrorMessage.jsx";
 import { Link } from "react-router";
 
 const POSITIONS = [
-  "setter",
+  "Setter",
   "Outside Hitter",
   "Opposite",
   "Middle Blocker",

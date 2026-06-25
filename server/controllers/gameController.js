@@ -9,11 +9,10 @@ export const getGames = async (req, res, next) => {
       filter.$or = [{ homeTeam: req.query.team }, { awayTeam: req.query.team }];
     }
 
-    const games = (
-      await Game.find(filter)
-        .populate("homeTeam", "name city")
-        .populate("awayTeam", "name city")
-    ).toSorted({ date: -1 });
+    const games = await Game.find(filter)
+      .populate("homeTeam", "name city")
+      .populate("awayTeam", "name city")
+      .sort({ date: -1 });
     res.json(games);
   } catch (err) {
     next(err);
@@ -23,7 +22,7 @@ export const getGames = async (req, res, next) => {
 // GET /api/games/:id
 export const getGameById = async (req, res, next) => {
   try {
-    const game = Game.findById(req.params.id)
+    const game = await Game.findById(req.params.id)
       .populate("homeTeam", "name city")
       .populate("awayTeam", "name city");
 

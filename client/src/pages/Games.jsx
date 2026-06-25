@@ -113,6 +113,7 @@ const Games = () => {
           type="datetime-local"
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
+          min="2000-01-01T00:00"
           required
         />
         <input

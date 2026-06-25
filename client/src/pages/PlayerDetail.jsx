@@ -34,7 +34,7 @@ const PlayerDetail = () => {
   if (error) return <ErrorMessage message={error} />;
 
   return (
-    <main className="pages">
+    <main className="page">
       <Link to="/players">Back to Players</Link>
       <h1>
         #{player.number} {player.name}

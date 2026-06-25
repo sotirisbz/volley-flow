@@ -20,7 +20,7 @@ const Teams = () => {
       setForm({ name: "", city: "" });
       await fetchTeams();
     } catch (err) {
-      setForm(err.message);
+      setFormErr(err.message);
     } finally {
       setSaving(false);
     }
