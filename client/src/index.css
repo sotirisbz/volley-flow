@@ -219,3 +219,148 @@ body {
 .home-card:hover {
   background: #16213e;
 }
+
+/* Score Banner */
+.game-title {
+  margin: 1.5rem 0 0.5rem;
+}
+.game-title .vs {
+  color: #999;
+  font-weight: 400;
+}
+
+.score-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  margin: 1.25rem 0;
+}
+.score-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.score-name {
+  font-size: 0.95rem;
+  color: #ccc;
+}
+.score-num {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #e94560;
+  line-height: 1;
+}
+.score-sep {
+  font-size: 2rem;
+  color: #555;
+}
+.score-team.away {
+  align-items: center;
+}
+
+/* Status Control */
+.status-control {
+  margin: 0.75rem 0 1.5rem;
+}
+.btn-status {
+  padding: 0.6rem 1.4rem;
+  background: #e94560;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-status:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+.btn-status:hover:not(:disabled) {
+  background: #c73652;
+}
+
+/* Set Editor */
+.set-editor {
+  margin-bottom: 1rem;
+}
+.set-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.score-input {
+  width: 70px;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+.saving-hint {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  padding: 0.35rem 0.9rem;
+  background: transparent;
+  border: 1px solid #1a1a2e;
+  color: #1a1a2e;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #1a1a2e;
+  color: #fff;
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Stats form */
+.stats-form-wrapper {
+  margin-bottom: 2rem;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+.stats-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  color: #444;
+}
+.stats-field input {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  width: 100%;
+}
+.stats-field input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Success message */
+.success-message {
+  background: #d1f5d3;
+  color: #1a6e26;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
