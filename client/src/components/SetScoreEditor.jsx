@@ -77,7 +77,7 @@ const SetScoreEditor = ({ game, onUpdate }) => {
                   className="score-input"
                   type="number"
                   min="0"
-                  value={s.homePoints}
+                  value={s.awayPoints}
                   onChange={(e) =>
                     handlePointChange(idx, "awayPoints", e.target.value)
                   }
