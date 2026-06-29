@@ -40,7 +40,10 @@ const gameSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    sets: [setSchema],
+    sets: {
+      type: [setSchema],
+      default: [],
+    },
     status: {
       type: String,
       enum: ["scheduled", "in_progress", "completed"],
@@ -52,6 +55,7 @@ const gameSchema = new mongoose.Schema(
 
 // compute set won by each team
 gameSchema.virtual("score").get(function () {
+  const sets = this.sets ?? [];
   const homeSetsWon = this.sets.filter(
     (s) => s.homePoints > s.awayPoints,
   ).length;
@@ -63,6 +67,7 @@ gameSchema.virtual("score").get(function () {
 
 // find winner from sets won
 gameSchema.virtual("winner").get(function () {
+  const sets = this.sets ?? [];
   const { home, away } = this.score;
   if (this.status !== "completed") return null;
   if (home > away) return this.homeTeam;

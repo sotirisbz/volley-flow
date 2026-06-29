@@ -21,6 +21,8 @@ const Players = () => {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [formErr, setFormErr] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filterTeam, setFilterTeam] = useState("");
   const [form, setForm] = useState({
     name: "",
     number: "",
@@ -80,6 +82,18 @@ const Players = () => {
     }
   };
 
+  const filtered = players.filter((p) => {
+    const q = search.toLowerCase();
+    const matchSearch =
+      !q ||
+      p.name.toLowerCase().includes(q) ||
+      String(p.number).includes(q) ||
+      p.position.toLowerCase().includes(q) ||
+      p.team?.name?.toLowerCase().includes(q);
+    const matchTeam = !filterTeam || p.team?._id === filterTeam;
+    return matchSearch && matchTeam;
+  });
+
   if (loading) return <Spinner />;
   if (error) return <ErrorMessage message={error} />;
 
@@ -132,19 +146,60 @@ const Players = () => {
         </button>
       </form>
 
-      <ul className="item-list">
-        {players.map((p) => (
-          <li key={p._id} className="item-row">
-            <Link to={`/players/${p._id}`}>
-              #{p.number} - <strong>{p.name}</strong> ({p.position})
-              {p.team && <span> - {p.team.name}</span>}
-            </Link>
-            <button className="btn-danger" onClick={() => handleDelete(p._id)}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="filter-bar">
+        <input
+          className="search-input"
+          placeholder="Search by name, number, position..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select
+          value={filterTeam}
+          onChange={(e) => setFilterTeam(e.target.value)}
+        >
+          <option value="">All teams</option>
+          {teams.map((t) => (
+            <option key={t._id} value={t._id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+        {(search || filterTeam) && (
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              setSearch("");
+              setFilterTeam("");
+            }}
+          >
+            Clear
+          </button>
+        )}
+        <span>
+          {filtered.length} player{filtered.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="empty-message">No players match the current search.</p>
+      ) : (
+        <ul className="item-list">
+          {filtered.map((p) => (
+            <li key={p._id} className="item-row">
+              <Link to={`/players/${p._id}`}>
+                #{p.number} - <strong>{p.name}</strong> ({p.position})
+                {p.team && <span> - {p.team.name}</span>}
+              </Link>
+              <button
+                className="btn-danger"
+                onClick={() => handleDelete(p._id)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 };

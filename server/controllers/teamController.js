@@ -54,7 +54,7 @@ export const updateTeam = async (req, res, next) => {
 };
 
 // DELETE /api/teams/:id
-export const deletTeam = async (req, res, next) => {
+export const deleteTeam = async (req, res, next) => {
   try {
     const team = await Team.findById(req.params.id);
     if (!team) {

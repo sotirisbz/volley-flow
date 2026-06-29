@@ -41,7 +41,7 @@ const gameStatsSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    serverErrors: {
+    serveErrors: {
       type: Number,
       default: 0,
     },
@@ -85,4 +85,4 @@ gameStatsSchema.virtual("attackPct").get(function () {
 gameStatsSchema.set("toJSON", { virtuals: true });
 gameStatsSchema.set("toObject", { virtuals: true });
 
-export default mongoose.model("Gamestats", gameStatsSchema);
+export default mongoose.model("GameStats", gameStatsSchema);

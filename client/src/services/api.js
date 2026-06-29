@@ -52,3 +52,5 @@ export const updateStats = (id, body) =>
   request(`/stats/${id}`, { method: "PUT", body: JSON.stringify(body) });
 export const deleteStats = (id) =>
   request(`/stats/${id}`, { method: "DELETE" });
+export const getPlayerSeasonStats = (playerId) =>
+  request(`/stats/player/${playerId}/season`);
