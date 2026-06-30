@@ -5,7 +5,8 @@ services:
     image: mongo:8
     container_name: vollyeflow-mongo
     restart: unless-stopped
-    volumes: -mongo-data:/data/db
+    volumes:
+      - mongo-data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
@@ -28,7 +29,8 @@ services:
   client-build:
     build: ./client
     container_name: vollyeflow-client-build
-    volumes: -client-dist:/dist
+    volumes:
+      - client-dist:/dist
 
   nginx:
     image: nginx:alpine
