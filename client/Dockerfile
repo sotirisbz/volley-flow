@@ -10,5 +10,6 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build
 
-FROM scratch
+FROM alpine:3.21
 COPY --from=build /app/dist /dist
+CMD [ "true" ]
