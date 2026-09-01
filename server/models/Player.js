@@ -4,7 +4,7 @@ const playerSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      requirede: [true, "Player name is required"],
+      required: [true, "Player name is required"],
       trim: true,
     },
     number: {
