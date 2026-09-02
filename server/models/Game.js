@@ -22,6 +22,17 @@ const setSchema = new mongoose.Schema(
 
 const gameSchema = new mongoose.Schema(
   {
+    league: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "League",
+      required: [true, "League is required"],
+    },
+    season: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Season",
+      required: [true, "Season is required"],
+    },
+
     homeTeam: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
