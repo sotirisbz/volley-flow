@@ -136,8 +136,28 @@ export const deleteStats = async (req, res, next) => {
 // GET /api/stats/player/:palyerId/season
 export const getPlayerSeasonStats = async (req, res, next) => {
   try {
+    const { season } = req.query;
+    if (!season) {
+      res.status(400);
+      throw new Error("A season query parameter is required");
+    }
+
     const [agg] = await GameStats.aggregate([
       { $match: { player: new mongoose.Types.ObjectId(req.params.playerId) } },
+      {
+        $lookup: {
+          from: "games",
+          localField: "game",
+          foreignField: "_id",
+          as: "gameInfo",
+        },
+      },
+      { $unwind: "gameInfo" },
+      {
+        $match: {
+          "gameInfo.season": new mongoose.Types.ObjectId(season),
+        },
+      },
       {
         $group: {
           _id: "$player",
