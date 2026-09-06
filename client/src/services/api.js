@@ -52,5 +52,32 @@ export const updateStats = (id, body) =>
   request(`/stats/${id}`, { method: "PUT", body: JSON.stringify(body) });
 export const deleteStats = (id) =>
   request(`/stats/${id}`, { method: "DELETE" });
-export const getPlayerSeasonStats = (playerId) =>
-  request(`/stats/player/${playerId}/season`);
+export const getPlayerSeasonStats = (playerId, seasonId) =>
+  request(`/stats/player/${playerId}/season?season=${seasonId}`);
+
+// Seasons
+export const getSeasons = () => request("/seasons");
+export const createSeason = (body) =>
+  request("/seasons", { method: "POST", body: JSON.stringify(body) });
+export const deleteSeason = (id) =>
+  request(`/seasons/${id}`, { method: "DELETE" });
+
+// Leagues
+export const getLeagues = () => request("/leagues");
+export const getLeagueById = (id) => request(`/leagues/${id}`);
+export const createLeague = (body) =>
+  request("/leagues", { method: "POST", body: JSON.stringify(body) });
+export const deleteLeague = (id) =>
+  request(`/leagues/${id}`, { method: "DELETE" });
+export const getLeagueTeams = (id, seasonId) =>
+  request(`/leagues/${id}/teams?season=${seasonId}`);
+export const getLeagueStandings = (id, seasonId) =>
+  request(`/leagues/${id}/standings?season=${seasonId}`);
+
+// Team
+export const assignTeamToLeague = (body) =>
+  request("/team-seasons", { method: "POST", body: JSON.stringify(body) });
+export const getTeamSeasonHistory = (teamId) =>
+  request(`/team-seasons/team/${teamId}`);
+export const removeTeamSeasonEntry = (id) =>
+  request(`/team-seasons/${id}`, { method: "DELETE" });
