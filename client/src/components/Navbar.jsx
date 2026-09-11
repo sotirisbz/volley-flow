@@ -5,6 +5,7 @@ const Navbar = () => (
     <span className="navbar-brand">VolleyFlow</span>
     <div className="navbar-links">
       <NavLink to="/">Home</NavLink>
+      <NavLink to="/leagues">Leagues</NavLink>
       <NavLink to="/teams">Teams</NavLink>
       <NavLink to="/players">Players</NavLink>
       <NavLink to="/games">Games</NavLink>
