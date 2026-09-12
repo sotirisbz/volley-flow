@@ -5,6 +5,7 @@ import {
   getPlayerSeasonStats,
   getStatsByPlayer,
 } from "../services/api.js";
+import { useApp } from "../context/AppContext.jsx";
 import Spinner from "../components/Spinner.jsx";
 import ErrorMessage from "../components/ErrorMessage.jsx";
 
@@ -17,23 +18,25 @@ const StatCard = ({ label, value }) => (
 
 const PlayerDetail = () => {
   const { id } = useParams();
+  const { seasons } = useApp();
   const [player, setPlayer] = useState(null);
   const [stats, setStats] = useState([]);
   const [season, setSeason] = useState(null);
+  const [seasonId, setSeasonId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const effectiveSeasonId = seasonId || seasons[0]?._id || "";
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [p, s, agg] = await Promise.all([
+        const [p, s] = await Promise.all([
           getPlayerById(id),
           getStatsByPlayer(id),
-          getPlayerSeasonStats(id),
         ]);
         setPlayer(p);
         setStats(s);
-        setSeason(agg);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -43,6 +46,22 @@ const PlayerDetail = () => {
 
     load();
   }, [id]);
+
+  useEffect(() => {
+    const loadSeasonStats = async () => {
+      if (!effectiveSeasonId) {
+        setSeason(null);
+        return;
+      }
+      try {
+        const agg = getPlayerSeasonStats(id, effectiveSeasonId);
+        setSeason(agg);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    loadSeasonStats();
+  }, [id, effectiveSeasonId]);
 
   if (loading) return <Spinner />;
   if (error) return <ErrorMessage message={error} />;
@@ -63,8 +82,26 @@ const PlayerDetail = () => {
         </p>
       )}
 
-      {/* Season aggregations */}
-      {season && (
+      <h2>Season Totals</h2>
+      <div className="filter-bar">
+        <select
+          value={effectiveSeasonId}
+          onChange={(e) => setSeasonId(e.target.value)}
+        >
+          <option value="">Select a season</option>
+          {seasons.map((s) => {
+            <option key={s._id} value={s._id}>
+              {s.name}
+            </option>;
+          })}
+        </select>
+      </div>
+
+      {!effectiveSeasonId ? (
+        <p className="empty-message">Select a season to see totals.</p>
+      ) : !season ? (
+        <p className="empty-message">No stats recorded for this season yet.</p>
+      ) : (
         <>
           <h2>Season Totals</h2>
           <p className="games-played">

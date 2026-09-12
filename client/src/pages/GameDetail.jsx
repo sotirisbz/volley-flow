@@ -72,6 +72,19 @@ const GameDetail = () => {
           <strong>Location:</strong> {game.location}
         </p>
       )}
+      {game.league && (
+        <p>
+          <strong>League:</strong>{" "}
+          <Link to={`/leagues/${game.league._id}`}>{game.league.name}</Link>(
+          {game.league.gender} - Tier {game.league.tier}
+          {game.league.group ? ` - ${game.league.group}` : ""})
+        </p>
+      )}
+      {game.season && (
+        <p>
+          <strong>Season:</strong> {game.season.name}
+        </p>
+      )}
       <p>
         <strong>Status: </strong>{" "}
         <span className={`badge badge-${game.status}`}>
