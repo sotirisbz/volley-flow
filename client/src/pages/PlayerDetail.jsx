@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import {
+  assignPlayerToTeam,
   getPlayerById,
+  getPlayerSeasonHistory,
   getPlayerSeasonStats,
   getStatsByPlayer,
+  removePlayerSeasonEntry,
 } from "../services/api.js";
 import { useApp } from "../context/AppContext.jsx";
 import Spinner from "../components/Spinner.jsx";
@@ -18,25 +21,38 @@ const StatCard = ({ label, value }) => (
 
 const PlayerDetail = () => {
   const { id } = useParams();
-  const { seasons } = useApp();
+  const { teams, seasons } = useApp();
   const [player, setPlayer] = useState(null);
   const [stats, setStats] = useState([]);
   const [season, setSeason] = useState(null);
   const [seasonId, setSeasonId] = useState("");
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [transferTeamId, setTransferTeamId] = useState("");
+  const [transferSeasonId, setTransferSeasonId] = useState("");
+  const [transferring, setTransferring] = useState(false);
+  const [transferErr, setTransferErr] = useState(null);
+
+  const loadHistory = async () => {
+    const h = await getPlayerSeasonHistory(id);
+    setHistory(h);
+  };
 
   const effectiveSeasonId = seasonId || seasons[0]?._id || "";
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [p, s] = await Promise.all([
+        const [p, s, h] = await Promise.all([
           getPlayerById(id),
           getStatsByPlayer(id),
+          getPlayerSeasonHistory(id),
         ]);
         setPlayer(p);
         setStats(s);
+        setHistory(h);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -63,6 +79,42 @@ const PlayerDetail = () => {
     loadSeasonStats();
   }, [id, effectiveSeasonId]);
 
+  const handleTransfer = async (e) => {
+    e.preventDefault();
+    if (!transferTeamId || !transferSeasonId) return;
+    setTransferring(true);
+    setTransferErr(null);
+    try {
+      await assignPlayerToTeam({
+        player: id,
+        team: transferTeamId,
+        season: transferSeasonId,
+      });
+      setTransferTeamId("");
+      setTransferSeasonId("");
+      const [p, h] = await Promise.all([
+        getPlayerById(id),
+        getPlayerSeasonHistory(id),
+      ]);
+      setPlayer(p);
+      setHistory(h);
+    } catch (err) {
+      setTransferErr(err.message);
+    } finally {
+      setTransferring(false);
+    }
+  };
+
+  const handleRemoveHistory = async (entryId) => {
+    if (!confirm("Remove this team registration for this season?")) return;
+    try {
+      await removePlayerSeasonEntry(entryId);
+      await loadHistory();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   if (loading) return <Spinner />;
   if (error) return <ErrorMessage message={error} />;
 
@@ -77,9 +129,71 @@ const PlayerDetail = () => {
       </p>
       {player.team && (
         <p>
-          <strong>Team:</strong>{" "}
+          <strong>Current Team:</strong>{" "}
           <Link to={`/teams/${player.team._id}`}>{player.team.name}</Link>
         </p>
+      )}
+
+      <form className="form-card" onSubmit={handleTransfer}>
+        <h2>Register / Transfer</h2>
+        {transferErr && <ErrorMessage message={transferErr} />}
+        <select
+          value={transferTeamId}
+          onChange={(e) => setTransferTeamId(e.target.value)}
+          required
+        >
+          <option value="">Team *</option>
+          {teams.map((t) => (
+            <option key={t._id} value={t._id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+        <select
+          value={transferSeasonId}
+          onChange={(e) => setTransferSeasonId(e.target.value)}
+          required
+        >
+          <option value="">Season *</option>
+          {seasons.map((s) => (
+            <option key={s._id} value={s._id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+        <button type="submit" disabled={transferring}>
+          {transferring ? "Saving..." : "Register"}
+        </button>
+      </form>
+      <p className="empty-message">
+        Registering for the most recent season on record updates the players
+        current team above
+      </p>
+
+      {history.length === 0 ? (
+        <p className="empty-message">No team history recorded yet.</p>
+      ) : (
+        <>
+          <h2>Team History</h2>
+          <ul className="item-list">
+            {history.map((h) => (
+              <li key={h._id} className="item-row">
+                <span>
+                  <Link to={`/team/${h.team._id}`}>
+                    <strong>{h.team.name}</strong>
+                  </Link>
+                  <span> - {h.season.name}</span>
+                </span>
+                <button
+                  className="btn-danger"
+                  onClick={() => handleRemoveHistory(h._id)}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
 
       <h2>Season Totals</h2>
