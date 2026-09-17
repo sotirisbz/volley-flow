@@ -6,6 +6,7 @@ import {
   getTeamSeasonHistory,
   assignTeamToLeague,
   removeTeamSeasonEntry,
+  getTeamSeasonRoster,
 } from "../services/api.js";
 import Spinner from "../components/Spinner.jsx";
 import ErrorMessage from "../components/ErrorMessage.jsx";
@@ -24,6 +25,10 @@ const TeamDetail = () => {
   const [seasonId, setSeasonId] = useState("");
   const [assigning, setAssigning] = useState(false);
   const [assignErr, setAssignErr] = useState(null);
+
+  const [rosterSeasonId, setRosterSeasonId] = useState("");
+  const [seasonRoster, setSeasonRoster] = useState(null);
+  const [seasonRosterLoading, setSeasonRosterLoading] = useState(false);
 
   const loadHistory = async () => {
     const h = await getTeamSeasonHistory(id);
@@ -50,6 +55,25 @@ const TeamDetail = () => {
 
     load();
   }, [id]);
+
+  useEffect(() => {
+    const loadSeasonRoster = async () => {
+      if (!rosterSeasonId) {
+        setSeasonRoster(null);
+        return;
+      }
+      setSeasonRosterLoading(true);
+      try {
+        const data = await getTeamSeasonRoster(id, rosterSeasonId);
+        setSeasonRoster(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setSeasonRosterLoading(false);
+      }
+    };
+    loadSeasonRoster();
+  }, [id, rosterSeasonId]);
 
   const handleAssign = async (e) => {
     e.preventDefault();
@@ -149,7 +173,7 @@ const TeamDetail = () => {
         </ul>
       )}
 
-      <h2>Roster</h2>
+      <h2>Current Roster</h2>
       {players.length === 0 ? (
         <p>
           No players yet. <Link to="/players">Add players</Link>.
@@ -157,6 +181,42 @@ const TeamDetail = () => {
       ) : (
         <ul className="item-list">
           {players.map((p) => (
+            <li key={p._id} className="item-row">
+              <Link to={`/players/${p._id}`}>
+                #{p.number} - <strong>{p.name}</strong> ({p.position})
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <h2>Roster by Season</h2>
+      <div className="filter-bar">
+        <select
+          value={rosterSeasonId}
+          onChange={(e) => setRosterSeasonId(e.target.value)}
+        >
+          <option value="">View a past's season roster</option>
+          {seasons.map((s) => (
+            <option key={s._id} value={s._id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      {!rosterSeasonId ? (
+        <p className="empty-message">
+          Select a season to see who played for the team that season.
+        </p>
+      ) : seasonRosterLoading ? (
+        <Spinner />
+      ) : seasonRoster && seasonRoster.length === 0 ? (
+        <p className="empty message">
+          No players registered to this team for that season.
+        </p>
+      ) : (
+        <ul className="item-list">
+          {seasonRoster?.map((p) => (
             <li key={p._id} className="item-row">
               <Link to={`/players/${p._id}`}>
                 #{p.number} - <strong>{p.name}</strong> ({p.position})
