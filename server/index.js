@@ -11,6 +11,7 @@ import seasonRoutes from "./routes/seasonRoutes.js";
 import leagueRoutes from "./routes/leagueRoutes.js";
 import teamSeasonRoutes from "./routes/teamSeasonRoutes.js";
 import playerSeasonRoutes from "./routes/playerSeasonRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -29,6 +30,7 @@ app.use("/api/seasons", seasonRoutes);
 app.use("/api/leagues", leagueRoutes);
 app.use("/api/team-seasons", teamSeasonRoutes);
 app.use("/api/player-seasons", playerSeasonRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use(errorHandler);
 

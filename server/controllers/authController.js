@@ -74,9 +74,14 @@ export const login = async (req, res, next) => {
 
     res.json({
       token: signToken(user),
-      user: { id: user._id, usernmae: user.username },
+      user: { id: user._id, username: user.username },
     });
   } catch (err) {
     next(err);
   }
+};
+
+// GET /api/auth/me
+export const getMe = async (req, res) => {
+  res.json({ id: req.user._id, username: req.user.username });
 };

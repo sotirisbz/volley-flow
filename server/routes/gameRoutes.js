@@ -8,11 +8,13 @@ import {
   deleteGame,
 } from "../controllers/gameController.js";
 
+import { protect } from "../middleware/auth.js";
+
 const router = express.Router();
 
-router.route("/").get(getGames).post(createGame);
-router.route("/:id").get(getGameById).delete(deleteGame);
-router.route("/:id/status").put(updateGameStatus);
-router.route("/:id/sets").put(updateSets);
+router.route("/").get(getGames).post(protect, createGame);
+router.route("/:id").get(getGameById).delete(protect, deleteGame);
+router.route("/:id/status").put(protect, updateGameStatus);
+router.route("/:id/sets").put(protect, updateSets);
 
 export default router;
